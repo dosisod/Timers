@@ -4,7 +4,7 @@
 
 <code>
 <p id="t">0.000</p>
-<p id="ts">---</br></p>
+<p id="ts">---</p>
 </code>
 
 <style>
@@ -38,11 +38,11 @@ function check() {
 		times.push(time) //add times to list
 		if (times.length==10) { times.shift() } //if index is over 10, remove oldest
 
-		document.getElementById("ts").innerHTML="---</br>" //reset time list
+		document.getElementById("ts").innerHTML="---<br>" //reset time list
 
 		//append most recent 10 times
 		for (i=0; i<times.length; i++) {
-			document.getElementById("ts").innerHTML+="</br>"+times[i]
+			document.getElementById("ts").innerHTML+="<br>"+times[i]
 		}
 	}
 	else if (active) { //update timer while active
