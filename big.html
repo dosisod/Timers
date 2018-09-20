@@ -1,0 +1,59 @@
+<html>
+<head><title>TIMER</title></head>
+<body onload="main()">
+
+<code>
+<p id="t">0.000</p>
+<p id="ts">---</p>
+</code>
+
+<style>
+* {
+	text-align: center;
+	font-size: 15px;
+}
+</style>
+
+<script>
+current="" //current key
+active=false
+start=Date.now()
+times=[]
+
+document.onkeypress=function (e) {
+	current=e.which;
+}
+function main() {
+	setInterval(check, 1000/60)
+}
+function check() {
+	if (current==32 && !active) { //start timer if not active
+		start=Date.now() //start clock
+		current="" //reset current key
+		active=true //make timer active
+		document.getElementById("t").style.fontSize="100px"
+		document.getElementById("ts").style.display="none"
+	}
+	else if (current==32 && active) { //stop timer if active
+		active=false
+		current=""
+		times.push(time) //add times to list
+		if (times.length==10) { times.shift() } //if index is over 10, remove oldest
+
+		document.getElementById("ts").innerHTML="---<br>" //reset time list
+
+		//append most recent 10 times
+		for (i=0; i<times.length; i++) {
+			document.getElementById("ts").innerHTML+="<br>"+times[i]
+		}
+		document.getElementById("t").style.fontSize="15px"
+		document.getElementById("ts").style.display="inline"
+	}
+	else if (active) { //update timer while active
+		//updates time and keeps trailing numbers for styling
+		time=document.getElementById("t").innerHTML=parseFloat((Date.now()-start)/1000).toFixed(3)
+	}
+}
+</script>
+</body>
+</html>
