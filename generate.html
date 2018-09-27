@@ -6,7 +6,6 @@
 <p id="s"></p>
 <p id="t">0.000</p>
 <p id="ts">---</p>
-<p id="x"></p>
 </code>
 
 <style>
@@ -18,23 +17,29 @@
 
 <script>
 current=0 //current key
-lastkey=32
 active=false //if timer is active
 start=Date.now()
 times=[]
+held=true
 
-document.onkeypress=function (e) {
+document.onkeydown=function (e) {
 	current=e.which
+	if (current==32) {
+		held=true
+	}
 }
-document.onkeyup=function () {
-	current=0
+document.onkeyup=function (e) {
+	if (e.which==32) {
+		if (active) { active=false }
+		else { held=false }
+	}
 }
 function main() {
 	document.getElementById("s").innerHTML=generate(20)
 	setInterval(check, 1000/60)
 }
 function check() {
-	if (current==32 && !active && lastkey!=32) { //start timer if not active
+	if (!held && !active) { //start timer if not active
 		start=Date.now() //start clock
 		current="" //reset current key
 		active=true //make timer active
@@ -42,15 +47,15 @@ function check() {
 		document.getElementById("s").style.display="none"
 		document.getElementById("ts").style.display="none"
 	}
-	else if (current==32 && active) { //stop timer if active
-		active=false
-		current=""
+	else if (held && current==32 && active) { //stop timer if active
+		current=0
+		held=true
 		times.push(time) //add times to list
 		if (times.length==10) { times.shift() } //if index is over 10, remove oldest
 
 		document.getElementById("ts").innerHTML="---<br>" //reset time list
 
-		//append most recent 10 times
+		//only show the last 10 lines
 		for (i=0; i<times.length; i++) {
 			document.getElementById("ts").innerHTML+="<br>"+times[i]
 		}
@@ -59,13 +64,12 @@ function check() {
 		document.getElementById("ts").style.display="inline"
 		document.getElementById("s").innerHTML=generate(20)
 	}
-	else if (active) { //update timer while active
+	else if (!held) { //update timer while active
 		//updates time and keeps trailing numbers for styling
 		time=document.getElementById("t").innerHTML=parseFloat((Date.now()-start)/1000).toFixed(3)
 	}
-	lastkey=current
-	document.getElementById("x").innerHTML=current
 }
+
 function generate(num) {
 	sides=["U","D","L","R","F","B"]
 	turns=["'","","2"]
