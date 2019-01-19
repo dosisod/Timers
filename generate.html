@@ -1,6 +1,6 @@
 <html>
 <head><title>TIMER</title></head>
-<body onload="main()">
+<body>
 
 <code>
 <p id="s"></p>
@@ -22,10 +22,18 @@ start=Date.now()
 times=[]
 held=true
 
+window.onload=()=> {
+	document.getElementById("s").innerHTML=generate(20)
+	setInterval(check, 1000/60)
+}
+
 document.onkeydown=function (e) {
 	current=e.which
 	if (current==32) {
 		held=true
+	}
+	if (active) {
+		current=0
 	}
 }
 document.onkeyup=function (e) {
@@ -33,10 +41,6 @@ document.onkeyup=function (e) {
 		if (active) { active=false }
 		else { held=false }
 	}
-}
-function main() {
-	document.getElementById("s").innerHTML=generate(20)
-	setInterval(check, 1000/60)
 }
 function check() {
 	if (!held && !active) { //start timer if not active
@@ -47,7 +51,7 @@ function check() {
 		document.getElementById("s").style.display="none"
 		document.getElementById("ts").style.display="none"
 	}
-	else if (held && current==32 && active) { //stop timer if active
+	else if (held && active) { //stop timer if active
 		current=0
 		held=true
 		times.push(time) //add times to list
@@ -64,7 +68,7 @@ function check() {
 		document.getElementById("ts").style.display="inline"
 		document.getElementById("s").innerHTML=generate(20)
 	}
-	else if (!held) { //update timer while active
+	else if (!held && active) { //update timer while active
 		//updates time and keeps trailing numbers for styling
 		time=document.getElementById("t").innerHTML=parseFloat((Date.now()-start)/1000).toFixed(3)
 	}
