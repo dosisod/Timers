@@ -1,11 +1,16 @@
 <html>
-<head><title>TIMER</title></head>
+<head>
+
+<title>TIMER</title>
+<script src="/timer.js"></script>
+
+</head>
 <body>
 
 <code>
-<p id="s"></p>
-<p id="t">0.000</p>
-<p id="ts">---</p>
+<p id="scramble"></p>
+<p id="time">0.000</p>
+<p id="times">---</p>
 </code>
 
 <style>
@@ -15,79 +20,5 @@
 }
 </style>
 
-<script>
-current=0 //current key
-active=false //if timer is active
-start=Date.now()
-times=[]
-held=true
-
-window.onload=()=> {
-	document.getElementById("s").innerHTML=generate(20)
-	setInterval(check, 1000/60)
-}
-
-document.onkeydown=function (e) {
-	current=e.which
-	if (current==32) {
-		held=true
-	}
-	if (active) {
-		current=0
-	}
-}
-document.onkeyup=function (e) {
-	if (e.which==32) {
-		if (active) { active=false }
-		else { held=false }
-	}
-}
-function check() {
-	if (!held && !active) { //start timer if not active
-		start=Date.now() //start clock
-		current="" //reset current key
-		active=true //make timer active
-		document.getElementById("t").style.fontSize="100px"
-		document.getElementById("s").style.display="none"
-		document.getElementById("ts").style.display="none"
-	}
-	else if (held && active) { //stop timer if active
-		current=0
-		held=true
-		times.push(time) //add times to list
-		if (times.length==10) { times.shift() } //if index is over 10, remove oldest
-
-		document.getElementById("ts").innerHTML="---<br>" //reset time list
-
-		//only show the last 10 lines
-		for (i=0; i<times.length; i++) {
-			document.getElementById("ts").innerHTML+="<br>"+times[i]
-		}
-		document.getElementById("t").style.fontSize="15px"
-		document.getElementById("s").style.display="inline"
-		document.getElementById("ts").style.display="inline"
-		document.getElementById("s").innerHTML=generate(20)
-	}
-	else if (!held && active) { //update timer while active
-		//updates time and keeps trailing numbers for styling
-		time=document.getElementById("t").innerHTML=parseFloat((Date.now()-start)/1000).toFixed(3)
-	}
-}
-
-function generate(num) {
-	sides=["U","D","L","R","F","B"]
-	turns=["'","","2"]
-	last=next=ret=""
-	for (i=0; i<num; i++) {
-		next=sides[Math.floor((Math.random()*6)+0)]
-		while (next==last) { //cannot have 2 of the same side
-			next=sides[Math.floor((Math.random()*6)+0)]
-		}
-		last=next
-		ret+=next+turns[Math.floor((Math.random()*3)+0)]+" "
-	}
-	return ret
-}
-</script>
 </body>
 </html>
